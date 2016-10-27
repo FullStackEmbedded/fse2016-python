@@ -1,0 +1,63 @@
+#!/usr/local/bin/python2.7
+# encoding: utf-8
+
+'''
+A converter between Arabic and Roman numerals.
+
+Named after the Parthian ambassador to Rome, Orobazus, even though the
+Persians at that time did not use Arabic numerals. Ambassadors can do lots of
+things.
+'''
+
+from argparse import ArgumentParser
+
+from roman_numerals import to_roman, to_arabic
+from roman_numerals.to_roman import InvalidNumberError
+
+
+PROGRAM_DESCRIPTION = (
+"""Convert from Arabic to Roman numerals or back again.
+
+The program can be called with numbers to convert. Their converted counterparts
+are printed in the order they were provided.
+
+Numbers are converted according to the following scheme: If they can be
+recognized as Arabic numerals, they are converted to Roman numerals. Otherwise,
+they are converted from Roman to Arabic numerals. Invalid numerals are returned
+as the string "NA".
+"""
+)
+
+
+def main():
+    """
+    Convert between Arabic and Roman numerals.
+
+    Normally this would be simple enough not to explain, but since this is a
+    beginner's class I'm writing very verbosely.
+
+    First, the command line arguments are parsed using Python's argparse
+    library. This library prints the help if the user asks for it (using the
+    "-h" flag, as is usual in UNIX systems). Otherwise
+    """
+    parser = ArgumentParser(PROGRAM_DESCRIPTION)
+    parser.add_argument("numbers", nargs='+')
+    args = parser.parse_args()
+    results = args.numbers[:]
+    for i in range(len(args.numbers)):
+        number = args.numbers[i]
+        try:
+            number = int(number)
+            fun = to_roman
+        except ValueError:
+            fun = to_arabic
+        try:
+            results[i] = fun(number)
+        except InvalidNumberError:
+            results[i] = "NA"
+    print(" ".join((str(x) for x in results)))
+
+
+
+if __name__ == "__main__":
+    main()
